@@ -4,6 +4,8 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -21,6 +23,8 @@ public class UDPServer {
                 @Override
                 protected void initChannel(NioDatagramChannel ch) throws Exception {
                     ChannelPipeline pipeline = ch.pipeline();
+                    pipeline.addLast(new LengthFieldBasedFrameDecoder(1024, 0, 4, 0, 4));
+                    pipeline.addLast(new LoggingHandler());
                     pipeline.addLast(new UDPServerHandler());
                 }
             });
